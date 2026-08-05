@@ -37,6 +37,18 @@ app.get("/", (req, res) => {
 
 //------------------------------------------------------------------------------
 // endpoints
+//------------------------------------------------------------------------------
+
+// get all tasks
+app.get("/tasks", (req, res) => {
+    connection.query("SELECT * FROM tasks", (err, rows) => {
+        if (!err) {
+            res.json(functions.response('success', 'success', rows.length, rows));
+        } else {
+            res.json(functions.response('error', 'err.massage', 0, null));
+        }
+    });
+});
 
 //------------------------------------------------------------------------------
 app.use((req, res) => {
