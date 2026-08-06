@@ -50,6 +50,24 @@ app.get("/tasks", (req, res) => {
     });
 });
 
+// get task by id
+app.get('/task/:id', (req, res) => {
+    const id = req.params.id;
+    connection.query("SELECT * FROM tasks WHERE id = ?", [id], (err, rows) => {
+        if (!err) {
+
+            if (rows.length > 0) {
+                res.json(functions.response('success', "success", rows.length, rows));
+            } else {
+                res.json(functions.response('error', 'err.massage', 0, null));
+            }
+
+        } else {
+            res.json(functions.response('error', "err.massage", 0, null));
+        }
+    })
+ })
+
 //------------------------------------------------------------------------------
 app.use((req, res) => {
     res.json(functions.response('Warning', 'Route not found', 0, null));
