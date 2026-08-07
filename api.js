@@ -51,7 +51,7 @@ app.get("/tasks", (req, res) => {
 });
 
 // get task by id
-app.get('/task/:id', (req, res) => {
+app.get('/tasks/:id', (req, res) => {
     const id = req.params.id;
     connection.query("SELECT * FROM tasks WHERE id = ?", [id], (err, rows) => {
         if (!err) {
@@ -62,6 +62,23 @@ app.get('/task/:id', (req, res) => {
                 res.json(functions.response('error', 'err.massage', 0, null));
             }
 
+        } else {
+            res.json(functions.response('error', "err.massage", 0, null));
+        }
+    })
+ })
+
+ // update task status 
+ app.put('/tasks/:id/status/:status', (req, res) => {
+    const id = req.params.id;
+    const status = req.params.status;
+    connection.query("UPDATE tasks SET status = ? WHERE id = ?", [status, id], (err, rows) => {
+        if (!err) {
+            if (rows.affectedRows > 0) {
+                res.json(functions.response('success', "success", rows.affectedRows, null));
+            } else {
+                res.json(functions.response('warning', 'Task not found', 0, null));
+            }
         } else {
             res.json(functions.response('error', "err.massage", 0, null));
         }
