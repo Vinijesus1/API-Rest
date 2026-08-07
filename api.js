@@ -112,28 +112,30 @@ app.post('/tasks/create', (req, res) => {
     const post_data = req.body;
 
     // chek if the data is empty
-    if (post_data == underfined) {
+    if (post_data == undefined) {
         res.json(functions.response('warning', "Empty data", 0, null));
+        return;
     }
 
     // check if data is invalid
-    if (post_data.tasks == underfined || post_data.status == underfined) {
+    if (post_data.task == undefined || post_data.status == undefined) {
         res.json(functions.response('warning', "Invalid data", 0, null));
+        return;
     }
 
     // get data from request
-    const tasks = post_data.tasks;
+    const task = post_data.task;
     const status = post_data.status;
 
     // insert new task
-    connection.query("INSERT INTO tasks (tasks, status, created_at, updated_at) VALUES (?, ?, now(), now())", [tasks, status], (err, rows) => {
+    connection.query("INSERT INTO tasks (task, status, create_at, updated_at) VALUES (?, ?, now(), now())", [task, status], (err, rows) => {
         if (!err) {
             res.json(functions.response('success', "Task created", rows.affectedRows, null));
         } else {
-            res.json(functions.response('error', "err.massage", 0, null));
+            res.json(functions.response('error', err.message, 0, null));  
         }
     })
-});    
+});
 
 //------------------------------------------------------------------------------
 app.use((req, res) => {
