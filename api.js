@@ -132,9 +132,47 @@ app.post('/tasks/create', (req, res) => {
         if (!err) {
             res.json(functions.response('success', "Task created", rows.affectedRows, null));
         } else {
-            res.json(functions.response('error', err.message, 0, null));  
+            res.json(functions.response('error', err.message, 0, null));
         }
     })
+});
+
+// update task text
+app.put('/tasks/:id/update', (req, res) => {
+
+    // get data from request
+    const id = req.params.id;
+    const post_data = req.body;
+
+    // check if the data is empty
+    if (post_data == undefined) {
+        res.json(functions.response('warning', "Empty data", 0, null));
+        return;
+    }
+
+    // check if data is invalid
+    if (post_data.task == undefined || post_data.status == undefined) {
+        res.json(functions.response('warning', "Invalid data", 0, null));
+        return;
+    }
+
+    // get data from request
+    const task = post_data.task;
+    const status = post_data.status;
+
+    // update data
+    connection.query("UPDATE tasks SET task = ?, status = ?, updated_at = now() WHERE id = ?", [task, status, id], (err, rows) => {
+
+        if (!err) {
+            if (rows.affectedRows > 0) {
+                res.json(functions.response('success', "Task updated", rows.affectedRows, null));
+            } else {
+                res.json(functions.response('warning', 'Task not found', 0, null));
+            }
+        } else {
+            res.json(functions.response('error', err.message, 0, null));
+        }
+    });
 });
 
 //------------------------------------------------------------------------------
